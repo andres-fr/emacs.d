@@ -164,3 +164,256 @@
 ;; coding: utf-8
 ;; no-byte-compile: t
 ;; End:
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ANDRES CONFIG
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; ;;; some useful global keybindings
+(global-set-key (kbd "S-C-<left>") 'shrink-window-horizontally)
+(global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)
+(global-set-key (kbd "S-C-<up>") 'shrink-window)
+(global-set-key (kbd "S-C-<down>") 'enlarge-window)
+(global-set-key (kbd "C--") 'delete-backward-char)
+(global-set-key (kbd "M--") 'backward-kill-word)
+(global-set-key (kbd "M-p") 'backward-paragraph)
+(global-set-key (kbd "M-n") 'forward-paragraph)
+(global-set-key (kbd "C-, C-,") 'replace-string)
+(global-set-key (kbd "C-, C-.") 'replace-regexp)
+(global-set-key (kbd "C-, C-c") 'comment-region)
+(global-set-key (kbd "C-, C-u") 'uncomment-region)
+
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;;;SMOOTH SCROLLING
+;; ;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'smooth-scrolling)
+(setq smooth-scroll-margin 7)
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;;;COLUMN ENFORCE MODE LINE SIZE 80
+;; ;;;;;;;;;;;;;;;;;;;;;;;;
+(defun column-enforce-mode-toggle-if-applicable ()
+  (if column-enforce-mode
+      (column-enforce-mode -1)
+    (when (derived-mode-p 'prog-mode)
+      (column-enforce-mode t))))
+
+(define-global-minor-mode global-column-enforce-mode column-enforce-mode
+  column-enforce-mode-toggle-if-applicable)
+(require 'column-enforce-mode)
+(global-column-enforce-mode t)
+
+
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;;; OCTAVE/MATLAB https://www.gnu.org/software/octave/doc/v4.0.1/Using-Octave-Mode.html#Using-Octave-Mode
+;; ;;;;;;;;;;;;;;;;;;;;;;;;
+;; (autoload 'octave-mode "octave-mod" nil t)
+;; (setq auto-mode-alist
+;;       (cons '("\\.m$" . octave-mode) auto-mode-alist))
+;; (add-hook 'octave-mode-hook
+;;           (lambda ()
+;;             (abbrev-mode 1)
+;;             (auto-fill-mode 1)
+;;             (if (eq window-system 'x)
+;;                 (font-lock-mode 1))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;; RAINBOW DELIMITERS
+;;;;;;;;;;;;;;;;;;;;;;;;
+;; '(rainbow-delimiters-depth-1-face ((t (:foreground "yellow"))))
+;; '(rainbow-delimiters-depth-2-face ((t (:foreground "dark gray"))))
+;; '(rainbow-delimiters-depth-3-face ((t (:foreground "deep pink"))))
+;; '(rainbow-delimiters-depth-4-face ((t (:foreground "green yellow"))))
+;; '(rainbow-delimiters-depth-5-face ((t (:foreground "deep sky blue"))))
+;; '(rainbow-delimiters-depth-6-face ((t (:foreground "yellow1"))))
+;; '(rainbow-delimiters-depth-7-face ((t (:foreground "gold3"))))
+;; '(rainbow-delimiters-depth-8-face ((t (:foreground "orange3"))))
+;; '(rainbow-delimiters-depth-9-face ((t (:foreground "DarkOrange4"))))
+
+
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;; SHELL CONFIGURATION
+;; ;;;;;;;;;;;;;;;;;;;;;;;;
+;; (defun my-clear ()
+;;   (interactive)
+;;   (let ((comint-buffer-maximum-size 0))
+;;     (comint-truncate-buffer)))
+;; (defun my-shell-hook ()
+;;   (local-set-key "\C-cl" 'my-clear))
+;; (add-hook 'shell-mode-hook 'my-shell-hook)
+
+
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;; PYTHON CONFIGURATION
+;; ;;;;;;;;;;;;;;;;;;;;;;;;
+;; (defun py-check-execute-string (command-to-print)
+;;   "just a check function for pedagogic purposes"
+;;   (py-execute-string
+;;    (concat "print('" (concat "EXECUTE>>> print(" command-to-print) ")')")))
+;; (defun py-check-execute-region (beg end)
+;;   "just a check function for pedagogic purposes"
+;;   (let ((command-to-print (buffer-substring beg end)))
+;;     (py-execute-string
+;;      (concat "print('" (concat "EXECUTE>>> " command-to-print) "')"))))
+
+;;                                         ; defining some useful functions
+;; (defun py-execute-line ()
+;;   "sends the current line to the Python interpreter."
+;;   (interactive)
+;;   (save-excursion
+;;     (let ((beg (line-beginning-position))
+;; 	  (end (line-end-position)))
+;;                                         ;(py-check-execute-region beg end) ;; for pedagogical purposes
+;;       (py-execute-region beg end))))
+;; (defun py-print-execute-line ()
+;;   "wraps the current line with print(<LINE>) and sends all to the interpreter."
+;;   (interactive)
+;;   (save-excursion
+;;     (let* ((beg (line-beginning-position))
+;; 	   (end (line-end-position))
+;; 	   (raw-line (buffer-substring-no-properties beg end))
+;; 	   (uncommented-line (first (split-string raw-line "#"))))
+;;                                         ;(py-check-execute-string uncommented-line) ;; for pedagogical purposes
+;;       (py-execute-string (concat "print(" uncommented-line ")")))))
+;; (defun py-execute-paragraph ()
+;;   "sends the current paragraph to the Python interpreter."
+;;   (interactive)
+;;   (save-excursion 
+;;     (let ((beg (progn (backward-paragraph)(line-beginning-position)))
+;; 	  (end (progn (forward-paragraph)(line-beginning-position))))
+;;       (py-execute-region beg end))))
+
+;; (defun py-run-current-file-with-shell ()
+;;   (interactive)
+;;   (shell-command (concat "python3 " (file-name-base) ".py")))
+
+;; (defun py-clear-helping-function ()
+;;   "helping function for py-clear-repl"
+;;   (let ((comint-buffer-maximum-size 0))
+;;     (comint-truncate-buffer)))
+;; (defun py-clear-repl ()
+;;   "clears the Python REPL"
+;;   (interactive)
+;;   (save-excursion
+;;     (set-buffer (concat "*" py-which-bufname "*"))
+;;     (py-clear-helping-function)
+;;     (end-of-buffer)))
+
+;; ;; initialization settings for python mode
+;;                                         ; autocompletion and help (see C-h m)
+;; (defun my-py-hook ()
+;;   (company-mode -1)
+;;   (auto-complete-mode)        
+;;   (jedi:ac-setup)             
+;;   (electric-pair-mode)        
+;;   (rainbow-delimiters-mode)   
+;;   (column-enforce-mode)
+;;   (local-set-key (kbd "C-c <C-return>") 'py-execute-region)
+;;   (local-set-key (kbd "<C-M-return>") 'py-execute-line)
+;;   (local-set-key (kbd "C-. <C-return>") 'py-print-execute-line)
+;;   (local-set-key (kbd "<C-return>") 'py-execute-paragraph)
+;;   (local-set-key (kbd "<M-return>") 'py-run-current-file-with-shell)
+;;   (local-set-key (kbd "C-c M-l") 'py-clear-repl))
+;; (add-hook 'python-mode-hook 'my-py-hook)
+
+;; ;; initialization settings for the python repl
+;; (defun my-py-shell-hook ()
+;;   (local-set-key (kbd "<up>") 'comint-previous-matching-input-from-input)
+;;   (local-set-key (kbd "<down>") 'comint-next-matching-input-from-input)
+;;   (local-set-key (kbd "C-c M-l") 'py-clear-repl))
+;; (add-hook 'py-shell-hook  'my-py-shell-hook)
+
+
+
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;; C/C++ CONFIGURATION
+;; ;;;;;;;;;;;;;;;;;;;;;;;;
+;; (require 'cl)
+
+;; (cl-defun my-compile-command
+;;     ( &optional (eval? t) (compiler "gcc") (c-standard "-std=c11")
+;; 		(warnings "-Wall -Wextra"))
+;;   "Returns a string with a bash command that compiles to a file named like the 
+;;    current buffer, and under the same directory.
+;;    Arguments:
+;;     -eval?: t by default, evals the program after compiling. Results are shown in the
+;;      *Shell Command Output* buffer.
+;;     -compiler, c-standard, warnings: optional flags for the compiler"
+;;   (interactive)
+;;   (let* ((file-name (buffer-file-name))
+;; 	 (outname  (file-name-sans-extension (buffer-name)))
+;; 	 (eval-after-compile (when eval? (concat " && ./" outname))))
+;;     (concat compiler " " c-standard " " warnings " "
+;; 	    file-name " -o " outname
+;; 	    eval-after-compile)))
+;; (defun my-c-compile-command ()
+;;   "inserts the compile&eval command given by (my-compile-command)
+;;    into the *shell* buffer, but doesn't evaluate it"
+;;   (interactive)
+;;   (let ((orig (buffer-name))
+;; 	(command (my-compile-command)))
+;;     (switch-to-buffer "*shell*")
+;;     (end-of-buffer)
+;;     (insert command)
+;;     (switch-to-buffer orig)))
+;; (defun my-c++-compile-command ()
+;;   "inserts the compile&eval command given by (my-compile-command)
+;;    into the *shell* buffer, but doesn't evaluate it"
+;;   (interactive)
+;;   (let ((orig (buffer-name))
+;; 	(command (my-compile-command t "g++" "-std=c++14")))
+;;     (switch-to-buffer "*shell*")
+;;     (end-of-buffer)
+;;     (insert command)
+;;     (switch-to-buffer orig)))
+
+;; (defun my-c-compile-buffer ()
+;;   "alias for my-compile-buffer"
+;;   (interactive)
+;;   (shell-command (my-compile-command)))
+;; (defun my-c++-compile-buffer ()
+;;   "basic c++ usage of my-compile-buffer"
+;;   (interactive)
+;;   (shell-command (my-compile-command t "g++" "-std=c++14")))
+
+;; (setf my-c-greeting (concat "printf "
+;; 		            "\"**********************************************\n"
+;; 			    "*         *Shell Command Output*             *\n"
+;; 			    "**********************************************\n"
+;; 			    "*  PRESS C-RET IN YOUR C FILE TO COMPILE IT  *\n"
+;; 			    "*   THE TERMINAL OUTPUT WILL BE SHOWN HERE   *\n"
+;; 			    "**********************************************\n\""))
+;;                                         ; add the custom c functions to the custom c hook
+;; (defun my-c-hook ()
+;;   (shell-command my-c-greeting)
+;;   (split-window-horizontally)
+;;   (save-excursion
+;;     (other-window 1)
+;;     (switch-to-buffer "*Shell Command Output*")
+;;     (split-window-vertically)
+;;     ;;(enlarge-window (/ (window-height (next-window)) 2))
+;;     (other-window 1)
+;;     (shell)
+;;     (switch-to-buffer "*shell*")
+;;     (other-window 1))
+;;   (local-set-key (kbd "C-. <C-return>") 'my-c-compile-command)
+;;   (local-set-key (kbd "<C-return>") 'my-c-compile-buffer))
+;;                                         ; add the custom c++ functions to the custom c++ hook
+;; (defun my-c++-hook ()
+;;   (local-set-key (kbd "C-. <C-return>") 'my-c++-compile-command)
+;;   (local-set-key (kbd "<C-return>") 'my-c++-compile-buffer))
+
+;; ;;; add the custom c hook to the main c hook
+;; (add-hook 'c-initialization-hook 'my-c-hook)
+;; ;;; add the custom c++ hook to the main c++ hook
+;; (add-hook 'c++-mode-hook 'my-c++-hook)
+
