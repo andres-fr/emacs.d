@@ -185,12 +185,22 @@
 (global-set-key (kbd "C-, C-.") 'replace-regexp)
 (global-set-key (kbd "C-, C-c") 'comment-region)
 (global-set-key (kbd "C-, C-u") 'uncomment-region)
+(delete-selection-mode 0)
+(defun select-current-word ()
+  (interactive)
+  (backward-word) (mark-word))
+(global-set-key (kbd "C-, C-w") 'select-current-word)
+;;; deactivate "too smart" features
+;(browse-kill-ring-mode)
+
+
 
 
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ;;;;;SMOOTH SCROLLING
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'smooth-scrolling)
+(smooth-scrolling-mode 1)
 (setq smooth-scroll-margin 7)
 
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;
@@ -208,6 +218,9 @@
 (global-column-enforce-mode t)
 
 
+;; ;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;;;MINIMAL PYTHON CONFIG
+;; ;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ;;;;; OCTAVE/MATLAB https://www.gnu.org/software/octave/doc/v4.0.1/Using-Octave-Mode.html#Using-Octave-Mode
@@ -215,12 +228,45 @@
 ;; (autoload 'octave-mode "octave-mod" nil t)
 ;; (setq auto-mode-alist
 ;;       (cons '("\\.m$" . octave-mode) auto-mode-alist))
-;; (add-hook 'octave-mode-hook
-;;           (lambda ()
-;;             (abbrev-mode 1)
-;;             (auto-fill-mode 1)
-;;             (if (eq window-system 'x)
-;;                 (font-lock-mode 1))))
+
+
+
+;; (defun py-clear-helping-function ()
+;;   "helping function for py-clear-repl"
+;;   (let ((comint-buffer-maximum-size 0))
+;;     (comint-truncate-buffer)))
+;; (defun py-clear-repl ()
+;;   "clears the Python REPL"
+;;   (interactive)
+;;   (save-excursion
+;;     (set-buffer (concat "*" py-which-bufname "*"))
+;;     (py-clear-helping-function)
+;;     (end-of-buffer)))
+
+(defun my-octave-clear-repl ()
+  (interactive)
+  (save-excursion
+    (set-buffer "*Inferior Octave*")
+    (erase-buffer)))
+
+(defun my-octave-send-paragraph ()
+  (interactive)
+  (save-excursion
+    (let ((beg (progn (backward-paragraph)(line-beginning-position)))
+	  (end (progn (forward-paragraph)(line-beginning-position))))
+      (octave-send-region beg end))))
+
+
+(add-hook 'octave-mode-hook
+          (lambda ()
+            (local-set-key (kbd "C-, <C-return>") 'my-octave-send-paragraph)
+            (local-set-key (kbd "<C-M-return>") 'octave-send-line)
+            (local-set-key (kbd "C-c M-l") 'my-octave-clear-repl)
+            (local-set-key "\C-m" (key-binding "\C-j")) ;;;RET-behaves-as-LFD 
+            (abbrev-mode 1)
+            (auto-fill-mode 1)
+            (if (eq window-system 'x)
+                (font-lock-mode 1))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
