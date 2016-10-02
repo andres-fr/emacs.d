@@ -260,13 +260,77 @@
 (add-hook 'octave-mode-hook
           (lambda ()
             (local-set-key (kbd "C-, <C-return>") 'my-octave-send-paragraph)
-            (local-set-key (kbd "<C-M-return>") 'octave-send-line)
+            (local-set-key (kbd "C-M-<return>") 'octave-send-line)
             (local-set-key (kbd "C-c M-l") 'my-octave-clear-repl)
             (local-set-key "\C-m" (key-binding "\C-j")) ;;;RET-behaves-as-LFD 
             (abbrev-mode 1)
             (auto-fill-mode 1)
             (if (eq window-system 'x)
                 (font-lock-mode 1))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;; SCALA CONFIG
+;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun my-ensime-send-string (str)
+  (with-current-buffer ensime-inf-buffer-name 
+    (goto-char (point-max))
+    (comint-send-string nil ":paste\n")
+    (comint-send-string nil str)
+    (comint-send-string nil "\n")
+    (comint-send-eof)))
+
+
+(defun my-ensime-eval-current-paragraph ()
+  (interactive) 
+  (let ((before-pos (point)))
+    (mark-paragraph)
+    (run-at-time "0.3 sec" nil #'(lambda (x) (deactivate-mark) (goto-char x)) before-pos)
+    (my-ensime-send-string
+     (buffer-substring-no-properties (region-beginning) (region-end)))))
+
+
+(defun my-ensime-eval-last-paragraph ()
+  (interactive)
+  ;;  schedule return to initial pos after 0.3 seconds
+  (let ((before-pos (point)))
+    (run-at-time "0.3 sec" nil #'(lambda (x)
+                                   ;;(goto-char (point))
+                                   (deactivate-mark)) before-pos)
+    ;; find last paragraph tail
+    (beginning-of-line)
+    (while (or  (<= (point) (point-min))
+                (looking-at "\\s-*$")) ;;regexp for "whitespace-only line"
+      (next-line -1))
+    ;; find last paragraph beginning
+    (while (or  (<= (point) (point-min))
+                (not (looking-at "\\s-*$"))) ;;regexp for "whitespace-only line"
+      (next-line -1))
+    (next-line)
+    ;; mark
+    (set-mark (point))
+    ;; find paragraph end
+    (while (not (looking-at "\\s-*$")) (next-line)) 
+    (my-ensime-send-string
+     (buffer-substring-no-properties (region-beginning) (region-end)))))
+
+(defun my-ensime-eval-current-line ()
+  (interactive)
+  (let ((before-pos (point)))
+    (beginning-of-line)
+    (set-mark (point))
+    (end-of-line)
+    (run-at-time "0.3 sec" nil #'(lambda (x)
+                                   (goto-char x)
+                                   (deactivate-mark)) before-pos)
+    (my-ensime-send-string (buffer-substring-no-properties (region-beginning) (region-end)))
+    )) 
+
+(add-hook 'ensime-mode-hook
+          (lambda ()
+            (local-set-key (kbd "C-, <C-return>") #'my-ensime-eval-last-paragraph)
+            (local-set-key (kbd "C-M-<return>") #'my-ensime-eval-current-line)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
