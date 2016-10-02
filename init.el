@@ -281,16 +281,6 @@
     (comint-send-string nil "\n")
     (comint-send-eof)))
 
-
-(defun my-ensime-eval-current-paragraph ()
-  (interactive) 
-  (let ((before-pos (point)))
-    (mark-paragraph)
-    (run-at-time "0.3 sec" nil #'(lambda (x) (deactivate-mark) (goto-char x)) before-pos)
-    (my-ensime-send-string
-     (buffer-substring-no-properties (region-beginning) (region-end)))))
-
-
 (defun my-ensime-eval-last-paragraph ()
   (interactive)
   ;;  schedule return to initial pos after 0.3 seconds
