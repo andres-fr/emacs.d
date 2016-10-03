@@ -315,10 +315,21 @@
                                    (goto-char x)
                                    (deactivate-mark)) before-pos)
     (my-ensime-send-string (buffer-substring-no-properties (region-beginning) (region-end)))
-    )) 
+    ))
+
+
+(defun my-ensime-clear-repl ()
+  (interactive)
+  (with-current-buffer ensime-inf-buffer-name
+    (erase-buffer)
+    (comint-send-input)))
+
+
+
 
 (add-hook 'ensime-mode-hook
           (lambda ()
+            (local-set-key (kbd "C-c M-l") #'my-ensime-clear-repl)
             (local-set-key (kbd "C-, <C-return>") #'my-ensime-eval-last-paragraph)
             (local-set-key (kbd "C-M-<return>") #'my-ensime-eval-current-line)))
 
