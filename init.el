@@ -196,6 +196,7 @@
 
 
 
+
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ;;;;;SMOOTH SCROLLING
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;
@@ -216,6 +217,15 @@
   column-enforce-mode-toggle-if-applicable)
 (require 'column-enforce-mode)
 (global-column-enforce-mode t)
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;;;SND CONFIG
+;; ;;;;;;;;;;;;;;;;;;;;;;;;
+(load "inf-snd.el")
+(set-default 'auto-mode-alist
+	     (append '(("\\.rbs$" . snd-ruby-mode)
+                    ("\\.snd$" . snd-scheme-mode))
+		     auto-mode-alist))
 
 
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;
