@@ -279,6 +279,8 @@ Will be called before finishing inferior Snd-Scheme process.")
 
 ;; (defvar inf-snd-scheme-program-name "snd-s7"
 ;;   "*User variable to set Snd-Scheme-program name and optional args.")
+
+;;; EDITED BY ANDRES: (see .emacs.d/snd-without-gui/problem for more info
 (defvar inf-snd-scheme-program-name "~/.emacs.d/snd-without-gui/snd-s7"
   "*User variable to set Snd-Scheme-program name and optional args.")
 

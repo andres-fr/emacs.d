@@ -224,22 +224,13 @@
 (load "inf-snd.el")
 (set-default 'auto-mode-alist
 	     (append '(("\\.rbs$" . snd-ruby-mode)
-                    ("\\.snd$" . snd-scheme-mode))
+                    ("\\.snd7$" . snd-scheme-mode))
 		     auto-mode-alist))
 
 
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ;;;;;MINIMAL PYTHON CONFIG
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; ;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;;;;; OCTAVE/MATLAB https://www.gnu.org/software/octave/doc/v4.0.1/Using-Octave-Mode.html#Using-Octave-Mode
-;; ;;;;;;;;;;;;;;;;;;;;;;;;
-;; (autoload 'octave-mode "octave-mod" nil t)
-;; (setq auto-mode-alist
-;;       (cons '("\\.m$" . octave-mode) auto-mode-alist))
-
-
 
 ;; (defun py-clear-helping-function ()
 ;;   "helping function for py-clear-repl"
@@ -252,6 +243,15 @@
 ;;     (set-buffer (concat "*" py-which-bufname "*"))
 ;;     (py-clear-helping-function)
 ;;     (end-of-buffer)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;; OCTAVE/MATLAB https://www.gnu.org/software/octave/doc/v4.0.1/Using-Octave-Mode.html#Using-Octave-Mode
+;;;;;;;;;;;;;;;;;;;;;;;;
+;(autoload 'octave-mode "octave-mod" nil t)
+(setq auto-mode-alist
+      (cons '("\\.m$" . octave-mode) auto-mode-alist))
+
 
 (defun my-octave-clear-repl ()
   (interactive)
@@ -455,86 +455,88 @@
 
 
 
-;; ;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;;; C/C++ CONFIGURATION
-;; ;;;;;;;;;;;;;;;;;;;;;;;;
-;; (require 'cl)
+;;;;;;;;;;;;;;;;;;;;;;;;
+;;; C/C++ CONFIGURATION
+;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'cl)
 
-;; (cl-defun my-compile-command
-;;     ( &optional (eval? t) (compiler "gcc") (c-standard "-std=c11")
-;; 		(warnings "-Wall -Wextra"))
-;;   "Returns a string with a bash command that compiles to a file named like the 
-;;    current buffer, and under the same directory.
-;;    Arguments:
-;;     -eval?: t by default, evals the program after compiling. Results are shown in the
-;;      *Shell Command Output* buffer.
-;;     -compiler, c-standard, warnings: optional flags for the compiler"
-;;   (interactive)
-;;   (let* ((file-name (buffer-file-name))
-;; 	 (outname  (file-name-sans-extension (buffer-name)))
-;; 	 (eval-after-compile (when eval? (concat " && ./" outname))))
-;;     (concat compiler " " c-standard " " warnings " "
-;; 	    file-name " -o " outname
-;; 	    eval-after-compile)))
-;; (defun my-c-compile-command ()
-;;   "inserts the compile&eval command given by (my-compile-command)
-;;    into the *shell* buffer, but doesn't evaluate it"
-;;   (interactive)
-;;   (let ((orig (buffer-name))
-;; 	(command (my-compile-command)))
-;;     (switch-to-buffer "*shell*")
-;;     (end-of-buffer)
-;;     (insert command)
-;;     (switch-to-buffer orig)))
-;; (defun my-c++-compile-command ()
-;;   "inserts the compile&eval command given by (my-compile-command)
-;;    into the *shell* buffer, but doesn't evaluate it"
-;;   (interactive)
-;;   (let ((orig (buffer-name))
-;; 	(command (my-compile-command t "g++" "-std=c++14")))
-;;     (switch-to-buffer "*shell*")
-;;     (end-of-buffer)
-;;     (insert command)
-;;     (switch-to-buffer orig)))
+(cl-defun my-compile-command
+    ( &optional (eval? t) (compiler "gcc") (c-standard "-std=c11")
+		(warnings "-Wall -Wextra"))
+  "Returns a string with a bash command that compiles to a file named like the 
+   current buffer, and under the same directory.
+   Arguments:
+    -eval?: t by default, evals the program after compiling. Results are shown in the
+     *Shell Command Output* buffer.
+    -compiler, c-standard, warnings: optional flags for the compiler"
+  (interactive)
+  (let* ((file-name (buffer-file-name))
+	 (outname  (file-name-sans-extension (buffer-name)))
+	 (eval-after-compile (when eval? (concat " && ./" outname))))
+    (concat compiler " " c-standard " " warnings " "
+	    file-name " -o " outname
+	    eval-after-compile)))
+(defun my-c-compile-command ()
+  "inserts the compile&eval command given by (my-compile-command)
+   into the *shell* buffer, but doesn't evaluate it"
+  (interactive)
+  (let ((orig (buffer-name))
+	(command (my-compile-command)))
+    (switch-to-buffer "*shell*")
+    (end-of-buffer)
+    (insert command)
+    (switch-to-buffer orig)))
+(defun my-c++-compile-command ()
+  "inserts the compile&eval command given by (my-compile-command)
+   into the *shell* buffer, but doesn't evaluate it"
+  (interactive)
+  (let ((orig (buffer-name))
+	(command (my-compile-command t "g++" "-std=c++14")))
+    (switch-to-buffer "*shell*")
+    (end-of-buffer)
+    (insert command)
+    (switch-to-buffer orig)))
 
-;; (defun my-c-compile-buffer ()
-;;   "alias for my-compile-buffer"
-;;   (interactive)
-;;   (shell-command (my-compile-command)))
-;; (defun my-c++-compile-buffer ()
-;;   "basic c++ usage of my-compile-buffer"
-;;   (interactive)
-;;   (shell-command (my-compile-command t "g++" "-std=c++14")))
+(defun my-c-compile-buffer ()
+  "alias for my-compile-buffer"
+  (interactive)
+  (shell-command (my-compile-command)))
+(defun my-c++-compile-buffer ()
+  "basic c++ usage of my-compile-buffer"
+  (interactive)
+  (shell-command (my-compile-command t "g++" "-std=c++14")))
 
-;; (setf my-c-greeting (concat "printf "
-;; 		            "\"**********************************************\n"
-;; 			    "*         *Shell Command Output*             *\n"
-;; 			    "**********************************************\n"
-;; 			    "*  PRESS C-RET IN YOUR C FILE TO COMPILE IT  *\n"
-;; 			    "*   THE TERMINAL OUTPUT WILL BE SHOWN HERE   *\n"
-;; 			    "**********************************************\n\""))
-;;                                         ; add the custom c functions to the custom c hook
-;; (defun my-c-hook ()
-;;   (shell-command my-c-greeting)
-;;   (split-window-horizontally)
-;;   (save-excursion
-;;     (other-window 1)
-;;     (switch-to-buffer "*Shell Command Output*")
-;;     (split-window-vertically)
-;;     ;;(enlarge-window (/ (window-height (next-window)) 2))
-;;     (other-window 1)
-;;     (shell)
-;;     (switch-to-buffer "*shell*")
-;;     (other-window 1))
-;;   (local-set-key (kbd "C-. <C-return>") 'my-c-compile-command)
-;;   (local-set-key (kbd "<C-return>") 'my-c-compile-buffer))
-;;                                         ; add the custom c++ functions to the custom c++ hook
-;; (defun my-c++-hook ()
-;;   (local-set-key (kbd "C-. <C-return>") 'my-c++-compile-command)
-;;   (local-set-key (kbd "<C-return>") 'my-c++-compile-buffer))
+(setf my-c-greeting (concat "printf "
+		            "\"**********************************************\n"
+			    "*         *Shell Command Output*             *\n"
+			    "**********************************************\n"
+			    "*  PRESS C-RET IN YOUR C FILE TO COMPILE IT  *\n"
+			    "*   THE TERMINAL OUTPUT WILL BE SHOWN HERE   *\n"
+			    "**********************************************\n\""))
+                                        ; add the custom c functions to the custom c hook
+(defun my-c-hook ()
+  (shell-command my-c-greeting)
+  (split-window-horizontally)
+  (save-excursion
+    (other-window 1)
+    (switch-to-buffer "*Shell Command Output*")
+    (split-window-vertically)
+    ;;(enlarge-window (/ (window-height (next-window)) 2))
+    (other-window 1)
+    (shell)
+    (switch-to-buffer "*shell*")
+    (other-window 1))
+  (local-set-key (kbd "C-. <C-return>") 'my-c-compile-command)
+  (local-set-key (kbd "<C-return>") 'my-c-compile-buffer))
+                                        ; add the custom c++ functions to the custom c++ hook
+(defun my-c++-hook ()
+  (local-set-key (kbd "C-. C-c") 'my-c++-compile-command)
+  (local-set-key (kbd "C-. C-.") 'my-c++-compile-buffer))
 
-;; ;;; add the custom c hook to the main c hook
-;; (add-hook 'c-initialization-hook 'my-c-hook)
-;; ;;; add the custom c++ hook to the main c++ hook
-;; (add-hook 'c++-mode-hook 'my-c++-hook)
+;;; add the custom c hook to the main c hook
+(add-hook 'c-initialization-hook 'my-c-hook)
+;;; add the custom c++ hook to the main c++ hook
+(add-hook 'c++-mode-hook 'my-c++-hook)
+
+
 

@@ -1,0 +1,11 @@
+It seems that the ubuntu apt-get "snd", which runs with GUI, lacks some basical functions
+(regarding hooks, sound edit...)
+
+on the other side the compiled version runs fine, also without GUIs BUT when executing the binary, it requires the following files:
+libc_s7.so
+s7.h
+
+To be in the same folder FROM WHICH IT WAS CALLED.
+I tried to compile them too, to integrate them to the compiled binary and to set them to "/usr/shared" whatever, but I'm no expert plus didn't try very hard.
+
+So what I did is copy them to home and call emacs always from home. This is dirty but I left here all necessary to do it properly in future settings if necessary
