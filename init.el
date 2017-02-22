@@ -224,9 +224,36 @@
 (load "inf-snd.el")
 (set-default 'auto-mode-alist
 	     (append '(("\\.rbs$" . snd-ruby-mode)
-                    ("\\.snd7$" . snd-scheme-mode))
+                       ("\\.snd7$" . snd-scheme-mode))
 		     auto-mode-alist))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;MINIMAL RUBY CONFIG
+;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun my-ruby-clear-repl ()
+  (interactive)
+  (save-excursion
+    (set-buffer inf-ruby-buffer)
+    (erase-buffer) 
+    (ruby-send-block)
+    ))
+
+(defun my-ruby-send-paragraph ()
+  (interactive)
+  (save-excursion
+    (let ((beg (progn (backward-paragraph)(line-beginning-position)))
+	  (end (progn (forward-paragraph)(line-beginning-position))))
+      (ruby-send-region beg end))))
+
+
+(add-hook 'ruby-mode-hook
+          (lambda ()
+            (local-set-key (kbd "C-c M-l") 'my-ruby-clear-repl)
+            (local-set-key (kbd "C-M-<return>") 'my-ruby-send-paragraph)
+            (local-set-key (kbd "C-, <C-return>") 'ruby-send-buffer)
+            ))
 
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ;;;;;MINIMAL PYTHON CONFIG
@@ -248,7 +275,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;; OCTAVE/MATLAB https://www.gnu.org/software/octave/doc/v4.0.1/Using-Octave-Mode.html#Using-Octave-Mode
 ;;;;;;;;;;;;;;;;;;;;;;;;
-;(autoload 'octave-mode "octave-mod" nil t)
+                                        ;(autoload 'octave-mode "octave-mod" nil t)
 (setq auto-mode-alist
       (cons '("\\.m$" . octave-mode) auto-mode-alist))
 
@@ -540,3 +567,4 @@
 
 
 
+(put 'erase-buffer 'disabled nil)
