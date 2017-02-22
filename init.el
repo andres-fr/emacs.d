@@ -386,16 +386,16 @@
 
 
 
-;; ;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;;; SHELL CONFIGURATION
-;; ;;;;;;;;;;;;;;;;;;;;;;;;
-;; (defun my-clear ()
-;;   (interactive)
-;;   (let ((comint-buffer-maximum-size 0))
-;;     (comint-truncate-buffer)))
-;; (defun my-shell-hook ()
-;;   (local-set-key "\C-cl" 'my-clear))
-;; (add-hook 'shell-mode-hook 'my-shell-hook)
+;;;;;;;;;;;;;;;;;;;;;;;;
+;;; SHELL CONFIGURATION
+;;;;;;;;;;;;;;;;;;;;;;;;
+(defun my-clear-shell ()
+  (interactive)
+  (let ((comint-buffer-maximum-size 0))
+    (comint-truncate-buffer)))
+(defun my-shell-hook ()
+  (local-set-key (kbd "C-c M-l") 'my-clear-shell))
+(add-hook 'shell-mode-hook 'my-shell-hook)
 
 
 
