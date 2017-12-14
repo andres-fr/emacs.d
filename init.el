@@ -1,3 +1,4 @@
+;; TAKE A LOOK AT THIS: http://dasnacl.de/
 
 ;;; This file bootstraps the configuration, which is divided into
 ;;; a number of other files.
@@ -561,9 +562,9 @@
   (local-set-key (kbd "C-. C-.") 'my-c++-compile-buffer))
 
 ;;; add the custom c hook to the main c hook
-(add-hook 'c-initialization-hook 'my-c-hook)
+; (add-hook 'c-initialization-hook 'my-c-hook)
 ;;; add the custom c++ hook to the main c++ hook
-(add-hook 'c++-mode-hook 'my-c++-hook)
+; (add-hook 'c++-mode-hook 'my-c++-hook)
 
 
 
