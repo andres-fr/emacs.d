@@ -569,3 +569,7 @@
 
 
 (put 'erase-buffer 'disabled nil)
+
+
+;; to remove the annoying desktop thing to to ./lisp/init-sessions.el and
+;; set (desktop-save-mode 0)
